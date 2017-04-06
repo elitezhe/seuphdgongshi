@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
 
 
 class XueweiInfo(object):
     def __init__(self, xuehao):
         self.xh = xuehao  # 学号
-        self.raw = u''  # HTML page
-        self.lx = u''  # 类型
-        self.ydbrq = u''  # 预答辩日期
-        self.ktrq = u''  # 开题日期
-        self.jsrq = u''  # 结束日期
-        self.dd = u''  # 地点
-        self.xtly = u''  # 选题来源
+        self.raw = ''  # HTML page
+        self.lx = ''  # 类型
+        self.ydbrq = ''  # 预答辩日期
+        self.ktrq = ''  # 开题日期
+        self.jsrq = ''  # 结束日期
+        self.dd = ''  # 地点
+        self.xtly = ''  # 选题来源
         self.lwzs = 0.0  # 论文字数(万字)
-        self.tm = u''  # 题目
-        self.ztc = u''  # 主题词
-        self.zy = u''  # 摘要
+        self.tm = ''  # 题目
+        self.ztc = ''  # 主题词
+        self.zy = ''  # 摘要
         self.ywtm = ''  # 英文题目
         self.ywztc = ''  # 英文主题词
         self.ywzy = ''  # 英文摘要
@@ -32,9 +32,9 @@ class XueweiInfo(object):
         获取包含答辩信息的HTML页面源码
         :return:
         """
-        xw_url = ur'http://202.119.4.150/newyjsy/byyxwgl/bssdbxxgsdetail.aspx?xh=%sxw' % self.xh
-        request = urllib2.Request(xw_url)
-        response_data = urllib2.urlopen(request)
+        xw_url = r'http://202.119.4.150/newyjsy/byyxwgl/bssdbxxgsdetail.aspx?xh=%sxw' % self.xh
+        request = urllib.request.Request(xw_url)
+        response_data = urllib.request.urlopen(request)
         response = response_data.read().decode('gbk').encode('utf-8')
         self.raw = response
 
@@ -166,11 +166,11 @@ class Xstl(object):
             self.bgr = infolist[3]
             self.bgzt = infolist[4]
         else:
-            self.zbdw = u''
-            self.sj = u''
-            self.dd = u''
-            self.bgr = u''
-            self.bgzt = u''
+            self.zbdw = ''
+            self.sj = ''
+            self.dd = ''
+            self.bgr = ''
+            self.bgzt = ''
 
     def set_from_list(self, infolist):
         if len(infolist) == 5:
@@ -195,11 +195,11 @@ class Xshy(object):
             self.brbg = infolist[3]
             self.bgtm = infolist[4]
         else:
-            self.hymc = u''
-            self.sj = u''
-            self.dd = u''
-            self.brbg = u''
-            self.bgtm = u''
+            self.hymc = ''
+            self.sj = ''
+            self.dd = ''
+            self.brbg = ''
+            self.bgtm = ''
 
     def set_from_list(self, infolist):
         if len(infolist) == 5:
@@ -224,17 +224,17 @@ class Dbwy(object):
         elif len(infolist) == 4:
             self.xm = infolist[0]
             self.zc = infolist[1]
-            self.dslb = u''
+            self.dslb = ''
             self.gzdw = infolist[2]
-            self.sfzx = u''
+            self.sfzx = ''
             self.bz = infolist[3]
         else:
-            self.xm = u''
-            self.zc = u''
-            self.dslb = u''
-            self.gzdw = u''
-            self.sfzx = u''
-            self.bz = u''
+            self.xm = ''
+            self.zc = ''
+            self.dslb = ''
+            self.gzdw = ''
+            self.sfzx = ''
+            self.bz = ''
 
     def set_from_list(self, infolist):
         if len(infolist) == 6:
@@ -247,9 +247,9 @@ class Dbwy(object):
         elif len(infolist) == 4:
             self.xm = infolist[0]
             self.zc = infolist[1]
-            self.dslb = u''
+            self.dslb = ''
             self.gzdw = infolist[2]
-            self.sfzx = u''
+            self.sfzx = ''
             self.bz = infolist[3]
 
 
@@ -259,6 +259,6 @@ if __name__ == '__main__':
     student = XueweiInfo(xh)
     student.get_raw()
     student.translate_raw()
-    print student
+    print(student)
 
 
