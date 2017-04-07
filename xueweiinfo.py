@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
 
@@ -26,6 +24,9 @@ class XueweiInfo(object):
         self.dbz = []  # 代表作 [论文名称]
         self.dbwyh = []  # 答辩委员会组成 [姓名 职称 导师类别 工作单位 是否主席 备注]
         self.dbms = []  # 答辩秘书 [姓名 职称 工作单位 备注]
+
+    def get_xh(self):
+        return self.xh
 
     def get_raw(self):
         """
@@ -146,7 +147,6 @@ class XueweiInfo(object):
         dbms = dbms[1:]
         for item in dbms:
             self.dbms.append(Dbwy(item))
-
 
     def save_to_database(self):
         pass
