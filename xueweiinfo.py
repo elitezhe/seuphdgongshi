@@ -1,5 +1,6 @@
 import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
+from logger import Logger
 
 
 class XueweiInfo(object):
@@ -46,8 +47,14 @@ class XueweiInfo(object):
         """
         # todo 判断raw是否成功获取
 
-        soup = BeautifulSoup(self.raw)
+        soup = BeautifulSoup(self.raw, "lxml")  # 指定解释器,避免warning
         self.lx = soup.find(id='lbllx').get_text(strip=True)
+        # 判断是否有具体数据(空页面)
+        if self.lx == '':
+            Logger.debug("%s 没有具体信息" % self.get_xh())
+            self.lx = 'error'
+            raise Exception()
+
         self.ydbrq = soup.find(id='lbldbrq').get_text(strip=True)
         self.ktrq = soup.find(id='lblksrq').get_text(strip=True)
         self.jsrq = soup.find(id='lbljsrq').get_text(strip=True)  # 结束日期
@@ -261,4 +268,11 @@ if __name__ == '__main__':
     student.translate_raw()
     print(student)
 
-
+    xh = '149544'
+    student1 = XueweiInfo(xh)
+    student1.get_raw()
+    try:
+        student1.translate_raw()
+    except:
+        Logger.debug('Error')
+    print(student1)
