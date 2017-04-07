@@ -15,7 +15,13 @@ class Agent():
     def crawl(self):
         # pid = os.getpid()
         # Logger.info("Pid: %d  processing  %s; %s" % (pid, self.now.get_xh(), self))
-        time.sleep(2)
+        # time.sleep(2)
+        Logger.info("Now crawl student: %s" % self.now.get_xh())
+        self.now.get_raw()
+        try:
+            self.now.translate_raw()
+        except:  # 信息为空
+            Logger.info("%s 无信息" % self.now.get_xh())
 
     def run(self):
         while True:
@@ -24,7 +30,7 @@ class Agent():
                     self.now = self.i_queue.get()
                     # 用StopFlag退出运行(return)
                     # StopFlag应是从队列中获取的,由于多线程运行,获取到StopFlag后,还应put另外一个StopFlag到队列中
-                    if self.now.get_xh == '-1':
+                    if self.now.get_xh() == '-1':
                         self.i_queue.put(XueweiInfo('-1'))
                         return
                 except queue.Empty:
@@ -34,14 +40,14 @@ class Agent():
                 self.crawl()
 
 
-
 if __name__ == '__main__':
     Logger.info('程序开始')
 
     inqueue = mp.Manager().Queue()
     outqueue = mp.Manager().Queue()
-    for i in range(10):
+    for i in range(30):
         inqueue.put(XueweiInfo(i))
+    inqueue.put(XueweiInfo('-1'))  # 很重要
 
     start_time = time.time()
 
