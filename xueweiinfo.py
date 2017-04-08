@@ -32,6 +32,12 @@ class XueweiInfo(object):
         self.dbz = []  # 代表作 [论文名称]
         self.dbwyh = []  # 答辩委员会组成 [姓名 职称 导师类别 工作单位 是否主席 备注]
         self.dbms = []  # 答辩秘书 [姓名 职称 工作单位 备注]
+        # self.data_dict = {
+        #     'XH': self.xh, 'LX': self.lx, 'YDBRQ': self.ydbrq, 'KTRQ': self.ktrq, 'JSRQ': self.jsrq,
+        #     'DD': self.dd, 'XTLY': self.xtly, 'LWZS': self.lwzs, 'TM': self.tm, 'ZTC': self.ztc,
+        #     'ZY': self.zy, 'YWTM': self.ywtm, 'YWZTC': self.ywztc, 'YWZY': self.ywzy,
+        #     'XSTL': self.xstl, 'XSHY': self.xshy, 'DBZ': self.dbz, 'DBWYH': self.dbwyh, 'DBMS': self.dbms}
+        self.data_dict = self.upate_data_dict()
 
     def get_xh(self):
         return self.xh
@@ -45,6 +51,7 @@ class XueweiInfo(object):
         request = urllib.request.Request(xw_url)
         response_data = urllib.request.urlopen(request)
         response = response_data.read().decode('gbk').encode('utf-8')
+        # response = response.replace("'", '"')  # 替换单引号为双引号
         self.raw = response
 
     def translate_raw(self):
@@ -162,8 +169,41 @@ class XueweiInfo(object):
         for item in dbms:
             self.dbms.append(Dbwy(item))
 
+        self.data_dict = self.upate_data_dict()
+
+    def upate_data_dict(self):
+        self.data_dict = {
+            'XH': self.xh, 'LX': self.lx, 'YDBRQ': self.ydbrq, 'KTRQ': self.ktrq, 'JSRQ': self.jsrq,
+            'DD': self.dd, 'XTLY': self.xtly, 'LWZS': self.lwzs, 'TM': self.tm, 'ZTC': self.ztc,
+            'ZY': self.zy, 'YWTM': self.ywtm, 'YWZTC': self.ywztc, 'YWZY': self.ywzy,
+            'XSTL': self.xstl, 'XSHY': self.xshy, 'DBZ': self.dbz, 'DBWYH': self.dbwyh, 'DBMS': self.dbms}
+        return self.data_dict
+
     def save_to_database(self):
-        pass
+        sql = 'UPDATE xuewei SET '
+        for key in self.data_dict:
+            if key == 'XH':
+                continue
+            elif key == 'XSTL':
+                tmp_str = ''
+                for item in self.data_dict['XSTL']:
+                    tmp_str = tmp_str + str(item)
+                sql = sql + " %s = '%s'," % (key, tmp_str)
+            elif key == 'XSHY':
+                pass
+            elif key == 'DBZ':
+                pass
+            elif key == 'DBWYH':
+                pass
+            elif key == 'DBMS':
+                pass
+            else:
+                # TODO 尚未完成
+                sql = sql + " %s = '%s'," % (key, str(self.data_dict[key]))
+
+        sql = sql[0:len(sql)-1]  # 去掉最后一个逗号
+        sql = sql + " WHERE XH = '%s'" % self.data_dict['XH']
+        return sql
 
     def read_from_database(self):
         pass
@@ -194,8 +234,9 @@ class Xstl(object):
             self.bgr = infolist[3]
             self.bgzt = infolist[4]
 
-    def get_printable(self):
-        pass
+    def __str__(self):
+        # todo
+        return 'xstl'
 
 
 class Xshy(object):
@@ -222,6 +263,9 @@ class Xshy(object):
             self.dd = infolist[2]
             self.brbg = infolist[3]
             self.bgtm = infolist[4]
+
+    def __str__(self):
+        pass
 
 
 class Dbwy(object):
@@ -266,6 +310,9 @@ class Dbwy(object):
             self.sfzx = ''
             self.bz = infolist[3]
 
+    def __str__(self):
+        pass
+
 
 if __name__ == '__main__':
     xh = '129629'
@@ -273,7 +320,7 @@ if __name__ == '__main__':
     student = XueweiInfo(xh)
     student.get_raw()
     student.translate_raw()
-    print(student)
+    print(student.save_to_database())
 
     xh = '149544'
     student1 = XueweiInfo(xh)
