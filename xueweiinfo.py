@@ -5,6 +5,13 @@ from logger import Logger
 
 class XueweiInfo(object):
     def __init__(self, xuehao):
+        # 检查学号有效性: 长度, 不以230开头
+        xuehao = format(xuehao)  # Agent测试时使用,平时没用
+        if len(xuehao) == 6:
+            pass
+        elif xuehao[0:3] == '230':
+            xuehao = xuehao[3:]
+
         self.xh = xuehao  # 学号
         self.raw = ''  # HTML page
         self.lx = ''  # 类型
