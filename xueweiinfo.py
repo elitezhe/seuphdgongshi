@@ -226,7 +226,7 @@ class XueweiInfo(object):
         pickle_path = os.path.join(pickle_path, "pickle")
         pickle_path = os.path.join(pickle_path, self.xh)
         with open(pickle_path, 'wb') as f:
-            pickle.dump(student, f)
+            pickle.dump(self, f)
 
     def pickle_load(self):
         """从指定位置的pickle文件中load信息,返回类对象. 注意:不改变本身的信息!!!"""
