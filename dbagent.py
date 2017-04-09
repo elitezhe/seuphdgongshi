@@ -1,11 +1,14 @@
 import sqlite3
 import os
+import multiprocessing as mp
+import queue
+import time
 from xueweiinfo import XueweiInfo
 from logger import Logger
 
 
 class DbAgent(object):
-    def __init__(self, dbfile='xueweidb.db'):
+    def __init__(self, inqueue, dbfile='xueweidb.db'):
         if dbfile == 'xueweidb.db':
             data_path = os.path.join(os.path.curdir, 'data')
             db_path = os.path.join(data_path, dbfile)
@@ -14,6 +17,7 @@ class DbAgent(object):
         self.conn = sqlite3.connect(db_path)
         self.cur = self.conn.cursor()
         self.table = 'xuewei'
+        self.i_queue = inqueue
 
     def commit(self):
         self.conn.commit()
@@ -42,14 +46,30 @@ class DbAgent(object):
         sql = student.save_to_database()
         self.cur.execute(sql)
 
+        student.pickle_dump()  # pickle存入data文件夹
+
         sql2 = "UPDATE xuewei SET HAVEDATA = 1 WHERE XH = '%s'" % xh
         self.cur.execute(sql2)
 
     def read_student(self):
         pass
 
+    def run(self):
+        while True:
+            if not self.i_queue.empty():
+                try:
+                    now = self.i_queue.get()
+                    if now.get_xh() == '-1':
+                        return  # 进程停止
+                    self.write_student(now)
+                except queue.Empty:
+                    time.sleep(2)  # 队列空,等待若干秒
+                    continue
+
+
 if __name__ == '__main__':
-    dba = DbAgent('.\data\SEUStudents.sqlite')
+    inqueue = mp.Manager().Queue()
+    dba = DbAgent(inqueue, '.\data\SEUStudents.sqlite')
     stu_list = dba.get_uncrawled_student_list()
     print(stu_list)
 
