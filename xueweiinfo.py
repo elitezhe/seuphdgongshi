@@ -190,13 +190,25 @@ class XueweiInfo(object):
                     tmp_str = tmp_str + str(item)
                 sql = sql + " %s = '%s'," % (key, tmp_str)
             elif key == 'XSHY':
-                pass
+                tmp_str = ''
+                for item in self.data_dict['XSHY']:
+                    tmp_str = tmp_str + str(item)
+                sql = sql + " %s = '%s'," % (key, tmp_str)
             elif key == 'DBZ':
-                pass
+                tmp_str = ''
+                for item in self.data_dict['DBZ']:
+                    tmp_str = tmp_str + '[' + item + ']'
+                sql = sql + " %s = '%s'," % (key, tmp_str)
             elif key == 'DBWYH':
-                pass
+                tmp_str = ''
+                for item in self.data_dict['DBWYH']:
+                    tmp_str = tmp_str + str(item)
+                sql = sql + " %s = '%s'," % (key, tmp_str)
             elif key == 'DBMS':
-                pass
+                tmp_str = ''
+                for item in self.data_dict['DBMS']:
+                    tmp_str = tmp_str + str(item)
+                sql = sql + " %s = '%s'," % (key, tmp_str)
             else:
                 # TODO 尚未完成
                 sql = sql + " %s = '%s'," % (key, str(self.data_dict[key]))
@@ -235,8 +247,7 @@ class Xstl(object):
             self.bgzt = infolist[4]
 
     def __str__(self):
-        # todo
-        return 'xstl'
+        return '[%s],[%s],[%s],[%s],[%s];' % (self.zbdw, self.sj, self.dd, self.bgr, self.bgzt)
 
 
 class Xshy(object):
@@ -265,7 +276,7 @@ class Xshy(object):
             self.bgtm = infolist[4]
 
     def __str__(self):
-        pass
+        return '[%s],[%s],[%s],[%s],[%s];' % (self.hymc, self.sj, self.dd, self.brbg, self.bgtm)
 
 
 class Dbwy(object):
@@ -311,7 +322,7 @@ class Dbwy(object):
             self.bz = infolist[3]
 
     def __str__(self):
-        pass
+        return '[%s],[%s],[%s],[%s],[%s],[%s];' % (self.xm, self.zc, self.dslb, self.gzdw, self.sfzx, self.bz)
 
 
 if __name__ == '__main__':
