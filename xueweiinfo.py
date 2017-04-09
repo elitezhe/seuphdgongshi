@@ -1,5 +1,7 @@
 import urllib.request, urllib.error, urllib.parse
 from bs4 import BeautifulSoup
+import pickle
+import os
 from logger import Logger
 
 
@@ -210,7 +212,6 @@ class XueweiInfo(object):
                     tmp_str = tmp_str + str(item)
                 sql = sql + " %s = '%s'," % (key, tmp_str)
             else:
-                # TODO 尚未完成
                 sql = sql + " %s = '%s'," % (key, str(self.data_dict[key]))
 
         sql = sql[0:len(sql)-1]  # 去掉最后一个逗号
@@ -220,6 +221,21 @@ class XueweiInfo(object):
     def read_from_database(self):
         pass
 
+    def pickle_dump(self):
+        pickle_path = os.path.join(os.path.curdir, "data")
+        pickle_path = os.path.join(pickle_path, "pickle")
+        pickle_path = os.path.join(pickle_path, self.xh)
+        with open(pickle_path, 'wb') as f:
+            pickle.dump(student, f)
+
+    def pickle_load(self):
+        """从指定位置的pickle文件中load信息,返回类对象. 注意:不改变本身的信息!!!"""
+        pickle_path = os.path.join(os.path.curdir, "data")
+        pickle_path = os.path.join(pickle_path, "pickle")
+        pickle_path = os.path.join(pickle_path, self.xh)
+        with open(pickle_path, 'rb') as f:
+            tmp_student = pickle.load(f)
+        return tmp_student
 
 class Xstl(object):
     """学术讨论"""
@@ -332,6 +348,17 @@ if __name__ == '__main__':
     student.get_raw()
     student.translate_raw()
     print(student.save_to_database())
+    # with open(r'.\data\pickle\129629', 'wb') as f:
+    #     pickle.dump(student, f)
+    #
+    # with open(r'.\data\pickle\129629', 'rb') as f:
+    #     student_p = pickle.load(f)
+
+    student.pickle_dump()
+    student2 = XueweiInfo(xh)
+    student3 = student2.pickle_load()
+    print(student2)
+    print(student3)
 
     xh = '149544'
     student1 = XueweiInfo(xh)
