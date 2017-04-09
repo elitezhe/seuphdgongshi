@@ -20,6 +20,7 @@ class Agent():
         self.now.get_raw()
         try:
             self.now.translate_raw()
+            self.o_queue.put(self.now)
         except:  # 信息为空
             Logger.info("%s 无信息" % self.now.get_xh())
 
